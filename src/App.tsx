@@ -30,7 +30,7 @@ function App() {
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
-  const handleNavClick = (id) => {
+  const handleNavClick = (id: string) => {
     setIsMenuOpen(false);
     document.getElementById(id)?.scrollIntoView({ behavior: 'smooth' });
   };
@@ -214,13 +214,13 @@ function App() {
             </div>
 
             <div className={`
-              md:hidden fixed inset-0 top-[57px] bg-gray-900/95 backdrop-blur-sm transition-transform duration-300 ease-in-out
+              md:hidden fixed inset-0 top-[57px] bg-white shadow-lg transition-transform duration-300 ease-in-out
               ${isMenuOpen ? 'translate-x-0' : 'translate-x-full'}
             `}>
-              <div className="flex flex-col items-center pt-8 space-y-8 text-white">
+              <div className="flex flex-col items-center pt-8 space-y-8 text-gray-900">
                 <a 
                   href="#about" 
-                  className="text-xl hover:text-blue-400 transition"
+                  className="text-xl hover:text-blue-600 transition"
                   onClick={(e) => {
                     e.preventDefault();
                     handleNavClick('about');
@@ -230,7 +230,7 @@ function App() {
                 </a>
                 <a 
                   href="#services" 
-                  className="text-xl hover:text-blue-400 transition"
+                  className="text-xl hover:text-blue-600 transition"
                   onClick={(e) => {
                     e.preventDefault();
                     handleNavClick('services');
@@ -240,7 +240,7 @@ function App() {
                 </a>
                 <a 
                   href="#contact" 
-                  className="text-xl hover:text-blue-400 transition"
+                  className="text-xl hover:text-blue-600 transition"
                   onClick={(e) => {
                     e.preventDefault();
                     handleNavClick('contact');
