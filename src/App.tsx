@@ -407,24 +407,44 @@ function App() {
               
             </div>
             <div>
-            <form className="space-y-4" data-netlify="true" name="contact">
+              <form 
+                name="contact" 
+                method="POST" 
+                data-netlify="true" 
+                netlify-honeypot="bot-field"
+                className="space-y-4"
+              >
                 <input type="hidden" name="form-name" value="contact" />
+                <p className="hidden">
+                  <label>
+                    Don't fill this out if you're human: <input name="bot-field" />
+                  </label>
+                </p>
                 <input
                   type="text"
+                  name="name"
                   placeholder={t('name')}
+                  required
                   className="w-full px-4 py-3 rounded-lg bg-gray-800 border border-gray-700 text-white placeholder-gray-400 focus:outline-none focus:border-blue-500"
                 />
                 <input
                   type="email"
+                  name="email"
                   placeholder={t('email')}
+                  required
                   className="w-full px-4 py-3 rounded-lg bg-gray-800 border border-gray-700 text-white placeholder-gray-400 focus:outline-none focus:border-blue-500"
                 />
                 <textarea
+                  name="message"
                   placeholder={t('message')}
+                  required
                   rows={4}
                   className="w-full px-4 py-3 rounded-lg bg-gray-800 border border-gray-700 text-white placeholder-gray-400 focus:outline-none focus:border-blue-500"
                 ></textarea>
-                <button className="w-full bg-blue-600 text-white px-6 py-3 rounded-lg hover:bg-blue-700 transition">
+                <button 
+                  type="submit"
+                  className="w-full bg-blue-600 text-white px-6 py-3 rounded-lg hover:bg-blue-700 transition"
+                >
                   {t('sendMessage')}
                 </button>
               </form>
