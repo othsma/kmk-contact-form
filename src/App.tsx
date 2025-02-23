@@ -9,14 +9,16 @@ import {
   Phone,
   Mail,
   MapPin,
+  Menu,
+  X,
 } from 'lucide-react';
 import { useLanguage } from './LanguageContext';
 
 function App() {
   const [showButton, setShowButton] = React.useState(false);
   const [scrollPercentage, setScrollPercentage] = React.useState(0);
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
 
-  
   React.useEffect(() => {
     const handleScroll = () => {
       const totalHeight = document.documentElement.scrollHeight - window.innerHeight;
@@ -27,6 +29,12 @@ function App() {
     window.addEventListener('scroll', handleScroll);
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
+
+  const handleNavClick = (id) => {
+    setIsMenuOpen(false);
+    document.getElementById(id)?.scrollIntoView({ behavior: 'smooth' });
+  };
+
   const { t, language, setLanguage } = useLanguage();
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const [isLoading, setIsLoading] = useState(true);
@@ -37,14 +45,12 @@ function App() {
   ];
 
   useEffect(() => {
-    // Preload images
     images.forEach(src => {
       const img = new Image();
       img.src = src;
       img.onload = () => setIsLoading(false);
     });
 
-    // Set up carousel interval
     const interval = setInterval(() => {
       setCurrentImageIndex((prevIndex) => (prevIndex + 1) % images.length);
     }, 8000);
@@ -92,9 +98,7 @@ function App() {
 
   return (
     <div className="min-h-screen bg-white">
-      {/* Hero Section */}
       <div className="h-screen relative overflow-hidden">
-        {/* Loading overlay */}
         {isLoading && (
           <div className="absolute inset-0 bg-black z-50 flex items-center justify-center">
             <div className="w-16 h-16 border-4 border-blue-600 border-t-transparent rounded-full animate-spin"></div>
@@ -108,7 +112,6 @@ function App() {
             aria-label="Back to top"
           >
             <svg className="w-full h-full transform -rotate-90" viewBox="0 0 100 100">
-              {/* Background circle */}
               <circle
                 cx="50"
                 cy="50"
@@ -117,7 +120,6 @@ function App() {
                 fill="none"
                 strokeWidth="8"
               />
-              {/* Progress circle */}
               <circle
                 cx="50"
                 cy="50"
@@ -145,7 +147,6 @@ function App() {
           </button>
         )}
         
-        {/* Carousel images */}
         {images.map((image, index) => (
           <div
             key={index}
@@ -158,23 +159,25 @@ function App() {
           />
         ))}
 
-          <div className="absolute inset-0 bg-gradient-to-b from-black/50 to-transparent overflow-visible">
-          <nav className={`fixed w-full top-0 z-50 px-20 py-3 backdrop-blur-sm transition-all duration-300 ${
+        <div className="absolute inset-0 bg-gradient-to-b from-black/50 to-transparent overflow-visible">
+          <nav className={`fixed w-full top-0 z-50 px-4 md:px-20 py-3 backdrop-blur-sm transition-all duration-300 ${
             scrollPercentage > 1 ? 'bg-white shadow-md' : 'bg-transparent'
           }`}>
             <div className="flex items-center justify-between">
-            {scrollPercentage > 1 ? <img src="https://github.com/Othsmatou/kmk2.0/blob/main/src/altLogo.png?raw=true" alt="KMK VVS Logo" className="h-12 w-auto pl-20" /> : <img src="https://github.com/Othsmatou/kmk2.0/blob/main/src/logo.png?raw=true" alt="KMK VVS Logo" className="h-12 w-auto pl-20" />}
+              {scrollPercentage > 1 ? 
+                <img src="https://github.com/Othsmatou/kmk2.0/blob/main/src/altLogo.png?raw=true" alt="KMK VVS Logo" className="h-12 w-auto pl-4 md:pl-20" /> : 
+                <img src="https://github.com/Othsmatou/kmk2.0/blob/main/src/logo.png?raw=true" alt="KMK VVS Logo" className="h-12 w-auto pl-4 md:pl-20" />
+              }
+              
               <div className={`hidden md:flex space-x-8 transition-colors duration-300 pr-24 ${
-            scrollPercentage > 1 ? 'text-gray-800' : 'text-white'
-          
-          }`}>
-            
+                scrollPercentage > 1 ? 'text-gray-800' : 'text-white'
+              }`}>
                 <a 
                   href="#about" 
                   className="hover:text-blue-400 transition"
                   onClick={(e) => {
                     e.preventDefault();
-                    document.getElementById('about')?.scrollIntoView({ behavior: 'smooth' });
+                    handleNavClick('about');
                   }}
                 >
                   {t('about')}
@@ -184,7 +187,7 @@ function App() {
                   className="hover:text-blue-400 transition"
                   onClick={(e) => {
                     e.preventDefault();
-                    document.getElementById('services')?.scrollIntoView({ behavior: 'smooth' });
+                    handleNavClick('services');
                   }}
                 >
                   {t('services')}
@@ -194,7 +197,53 @@ function App() {
                   className="hover:text-blue-400 transition"
                   onClick={(e) => {
                     e.preventDefault();
-                    document.getElementById('contact')?.scrollIntoView({ behavior: 'smooth' });
+                    handleNavClick('contact');
+                  }}
+                >
+                  {t('contact')}
+                </a>
+              </div>
+
+              <button
+                className={`md:hidden p-2 ${scrollPercentage > 1 ? 'text-gray-800' : 'text-white'}`}
+                onClick={() => setIsMenuOpen(!isMenuOpen)}
+                aria-label="Toggle menu"
+              >
+                {isMenuOpen ? <X size={24} /> : <Menu size={24} />}
+              </button>
+            </div>
+
+            <div className={`
+              md:hidden fixed inset-0 top-[57px] bg-gray-900/95 backdrop-blur-sm transition-transform duration-300 ease-in-out
+              ${isMenuOpen ? 'translate-x-0' : 'translate-x-full'}
+            `}>
+              <div className="flex flex-col items-center pt-8 space-y-8 text-white">
+                <a 
+                  href="#about" 
+                  className="text-xl hover:text-blue-400 transition"
+                  onClick={(e) => {
+                    e.preventDefault();
+                    handleNavClick('about');
+                  }}
+                >
+                  {t('about')}
+                </a>
+                <a 
+                  href="#services" 
+                  className="text-xl hover:text-blue-400 transition"
+                  onClick={(e) => {
+                    e.preventDefault();
+                    handleNavClick('services');
+                  }}
+                >
+                  {t('services')}
+                </a>
+                <a 
+                  href="#contact" 
+                  className="text-xl hover:text-blue-400 transition"
+                  onClick={(e) => {
+                    e.preventDefault();
+                    handleNavClick('contact');
                   }}
                 >
                   {t('contact')}
@@ -202,16 +251,16 @@ function App() {
               </div>
             </div>
           </nav>
-          
-          <div className="container mx-auto px-6 h-[calc(100vh-100px)] flex items-center justify-center ">
+
+          <div className="container mx-auto px-6 h-[calc(100vh-100px)] flex items-center justify-center">
             <div className="max-w-3xl text-center mt-28">
               <h1 className="text-5xl md:text-7xl font-bold text-white">
                 {t('heroTitle')}
               </h1>
-              <p className="text-2xl text-gray-200 mt-12 ">
+              <p className="text-2xl text-gray-200 mt-12">
                 {t('heroSubtitle')}
               </p>
-              <div className="flex flex-col sm:flex-row gap-4 justify-center mt-24" >
+              <div className="flex flex-col sm:flex-row gap-4 justify-center mt-24">
                 <button 
                   className="bg-blue-600 text-white px-8 py-3 rounded-full hover:bg-blue-700 transition text-lg"
                   onClick={() => document.getElementById('services')?.scrollIntoView({ behavior: 'smooth' })}
@@ -227,8 +276,7 @@ function App() {
               </div>
             </div>
           </div>
-          
-          {/* Carousel indicators */}
+
           <div className="absolute bottom-12 pb-2 left-1/2 transform -translate-x-1/2 flex space-x-2">
             {images.map((_, index) => (
               <button
@@ -243,12 +291,9 @@ function App() {
         </div>
       </div>
 
-      {/* Main content wrapper with negative margin for floating effect */}
       <div className="relative -mt-12">
-        <div className="container mx-auto ">
-          {/* Floating sections wrapper */}
+        <div className="container mx-auto">
           <div className="grid grid-cols-1 gap-1">
-            {/* Services Section */}
             <div id="services" className="bg-white rounded-2xl shadow-2xl p-8 transform hover:-translate-y-1 transition-all duration-300">
               <div className="text-center mb-16">
                 <h2 className="text-4xl font-bold text-gray-900 mb-4">{t('servicesTitle')}</h2>
@@ -281,7 +326,6 @@ function App() {
               </div>
             </div>
 
-            {/* About Us Section */}
             <div id="about" className="bg-white rounded-2xl shadow-2xl p-8 transform hover:-translate-y-1 transition-all duration-300">
               <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
                 <div className="relative h-[600px] rounded-lg overflow-hidden">
@@ -348,7 +392,6 @@ function App() {
               </div>
             </div>
 
-            {/* Why Choose Us Section */}
             <div className="bg-white rounded-2xl shadow-2xl p-8 transform hover:-translate-y-1 transition-all duration-300">
               <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
                 <div>
@@ -383,7 +426,6 @@ function App() {
         </div>
       </div>
 
-      {/* Contact Section */}
       <div id="contact" className="bg-gray-900 text-white py-20">
         <div className="container mx-auto px-6">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-12">
@@ -404,7 +446,6 @@ function App() {
                   <span>{t('adress')}</span>
                 </div>
               </div>
-              
             </div>
             <div>
               <form 
@@ -451,21 +492,20 @@ function App() {
             </div>
           </div>
           <div className="mt-8">
-                <iframe
-                  src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d2236.0374567012466!2d12.2955583!3d55.9276111!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x46524366f9e8b1e9%3A0x7f0c4c0f5e5c5c5c!2sFredensvej%2017%2C%203400%20Hiller%C3%B8d%2C%20Denmark!5e0!3m2!1sen!2sdk!4v1625123456789!5m2!1sen!2sdk"
-                  width="100%"
-                  height="300"
-                  style={{ border: 0, borderRadius: '0.5rem' }}
-                  allowFullScreen
-                  loading="lazy"
-                  referrerPolicy="no-referrer-when-downgrade"
-                  className="shadow-lg"
-                ></iframe>
-              </div>
+            <iframe
+              src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d2236.0374567012466!2d12.2955583!3d55.9276111!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x46524366f9e8b1e9%3A0x7f0c4c0f5e5c5c5c!2sFredensvej%2017%2C%203400%20Hiller%C3%B8d%2C%20Denmark!5e0!3m2!1sen!2sdk!4v1625123456789!5m2!1sen!2sdk"
+              width="100%"
+              height="300"
+              style={{ border: 0, borderRadius: '0.5rem' }}
+              allowFullScreen
+              loading="lazy"
+              referrerPolicy="no-referrer-when-downgrade"
+              className="shadow-lg"
+            ></iframe>
+          </div>
         </div>
       </div>
 
-      {/* Footer */}
       <footer className="bg-gray-900 text-gray-400 py-8">
         <div className="container mx-auto px-6">
           <div className="flex flex-col md:flex-row justify-between items-center">
